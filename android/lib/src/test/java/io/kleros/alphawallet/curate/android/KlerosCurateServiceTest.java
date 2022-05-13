@@ -16,6 +16,7 @@ import static org.junit.Assert.*;
 public class KlerosCurateServiceTest {
     @Test
     public void klerosCurateService() {
+        // Not a mock: this is testing against a live service.
         OkHttpClient httpClient = new OkHttpClient.Builder()
                 .connectTimeout(7, TimeUnit.SECONDS)
                 .readTimeout(7, TimeUnit.SECONDS)
@@ -31,6 +32,15 @@ public class KlerosCurateServiceTest {
             assertEquals("0xdAC17F958D2ee523a2206206994597C13D831ec7", info.contractAddress);
             assertEquals("https://tether.to/", info.uiWebsiteLink);
             assertEquals("The contract of Tether (USDT) stablecoin.", info.publicNote);
+
+            info = classUnderTest.request("0xe592427a0aece92de3edee1f18e0157c05861564");
+            assertEquals("Uniswap V3: Router 1", info.publicNameTag);
+            assertEquals("0xe592427a0aece92de3edee1f18e0157c05861564", info.contractAddress);
+            assertEquals("https://app.uniswap.org/#/swap", info.uiWebsiteLink);
+            assertEquals("Version 1 of the Uniswap V3 Router.", info.publicNote);
+
+            info = classUnderTest.request("0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72");
+            assertEquals(KlerosCurateService.NULL_ADDRESS_INFORMATION, info);
         } catch (IOException e) {
             fail();
         }
